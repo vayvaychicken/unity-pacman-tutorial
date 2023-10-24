@@ -12,8 +12,8 @@ public class Basketball_Player_Movement : MonoBehaviour
     [SerializeField] private LayerMask jumpableGround;
 
     private float dirX = 0f;
-    [SerializeField] private float moveSpeed = 7f;
-    [SerializeField] private float jumpForce = 14f;
+    public float moveSpeed = 5f;
+    public float jumpForce = 6f;
 
     private enum MovementState { idle, running, jumping, falling }
 
@@ -31,10 +31,13 @@ public class Basketball_Player_Movement : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        bool grounded = IsGrounded();
         dirX = Input.GetAxisRaw("Horizontal");
-        rb.velocity = new Vector2(dirX * moveSpeed, rb.velocity.y);
+        float xVelocity = dirX * moveSpeed;
+        if (!grounded) { xVelocity /= 3; }
+        rb.velocity = new Vector2(xVelocity, rb.velocity.y);
 
-        if (Input.GetButtonDown("Jump") && IsGrounded())
+        if (Input.GetButtonDown("Jump") && grounded)
         {
             if (jumpSoundEffect != null) { jumpSoundEffect.Play(); }
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
